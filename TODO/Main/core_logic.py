@@ -1,5 +1,6 @@
 from . import models
 from django.db.models import Q, Count, QuerySet
+from . import forms,models
 
 def filter_task(progress = 0, tag = "my_tasks"):
     list_task = models.Task.objects.filter(Q(progress = progress) & Q(tag = tag))
@@ -36,3 +37,14 @@ def updateTask(request,id):
         return False
     return None
 
+def createTask(request):
+    if request.method == "GET": 
+        form = forms.Task_form()
+        return form
+    elif request.method == "POST":
+        form = forms.Task_form(data=request .POST)
+        if form.is_valid():
+            form.save()
+            return True
+        return False
+    return None
