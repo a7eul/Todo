@@ -29,19 +29,73 @@
             <button class="btn create-btn">+ Добавить задачу</button>
         </a>
     </div>
+    <div class="filter_block">
+        <form method="POST" action="{% url "filter" %}">
+            {% csrf_token %}
+            <select  name="state" class="filter_el">
+                <option value="0" {% if i.progress == 0 %} selected {% endif %}>Принята</option>
+                <option value="1" {% if i.progress == 1 %} selected {% endif %}>В разработке</option>
+                <option value="2" {% if i.progress == 2 %} selected {% endif %}>Выполнена</option>
+                <option value="3" {% if i.progress == 3 %} selected {% endif %}>Отложена</option>
+                <option value="4" {% if i.progress == 4 %} selected {% endif %}>Провалена</option>
+            </select>
+            <select  name="tag" class="filter_el">
+                <option value="work" {% if i.progress == 0 %} selected {% endif %}>Работа</option>
+                <option value="home" {% if i.progress == 1 %} selected {% endif %}>Дом</option>
+                <option value="my_tasks" {% if i.progress == 2 %} selected {% endif %}>Мои задачи</option>
+            </select>
+            <input type="submit" value="Фильтр">
+
+        </form>
+         
+    </div>
     <!-- СПИСОК ЗАДАЧ -->
     <div class="tasks-container">
         {% for i in tasks %}
-        <div class="task-card card">
-            <h4>{{ i.name }}</h4>
+        <div class="task-card card status-{{ i.progress }}">
+    
+    <!-- ✏️ Редактирование -->
+    <a href="{% url "update" %}?id={{ i.id }}" class="edit-btn">
+        ✏️
+    </a>
 
-            <div class="task-actions">
-                <form method="GET" action="{% url "update" %}">
+    <div class="task-content">
+        <h4>{{ i.name }}</h4>
+
+        <div class="dropdown">
+            <button class="dropdown-toggle">⋮</button>
+
+            <div class="dropdown-menu">
+
+                <!-- СМЕНА СТАТУСА -->
+                <form method="POST" action="{% url "state" %}">
+                    {% csrf_token %}
                     <input type="hidden" name="id" value="{{ i.id }}">
-                    <button class="btn">Редактировать</button>
+
+                    <select name="state" onchange="this.form.submit()">
+                        <option value="0" {% if i.progress == 0 %} selected {% endif %}>Принята</option>
+                        <option value="1" {% if i.progress == 1 %} selected {% endif %}>В разработке</option>
+                        <option value="2" {% if i.progress == 2 %} selected {% endif %}>Выполнена</option>
+                        <option value="3" {% if i.progress == 3 %} selected {% endif %}>Отложена</option>
+                        <option value="4" {% if i.progress == 4 %} selected {% endif %}>Провалена</option>
+                    </select>
                 </form>
+
+                <!-- РАЗДЕЛИТЕЛЬ -->
+                <div class="dropdown-divider"></div>
+
+                <!-- УДАЛЕНИЕ -->
+                <form method="POST" action="{% url "delete" %}" onsubmit="return confirm('Удалить задачу?')">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="{{ i.id }}">
+                    <button class="delete-btn">🗑️ Удалить</button>
+                </form>
+
             </div>
         </div>
+
+    </div>
+</div>
         {% empty %}
         <p class="empty">Нет задач</p>
         {% endfor %}

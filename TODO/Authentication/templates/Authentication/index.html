@@ -4,7 +4,8 @@
 {% block title %}Аутентификация{% endblock title %}
 
 {% block style %}
-<link rel="stylesheet" href="{% static 'css/Authentication/style.css' %}">
+<link rel="stylesheet" href="{% static "Authentication/css/style.css" %}">
+<script src="{% static 'Authentication/js/script.js' %}"></script>
 {% endblock style %}
 
 {% block content %}
@@ -19,7 +20,7 @@
             {% endif %}
         </h2>
 
-        <form method="POST" action="{% if flag %} {% url 'login' %} {% else %} {% url 'reg' %} {% endif %}" class="auth-form">
+        <form method="POST" action="{% if flag %} {% url "login" %} {% else %} {% url "reg" %} {% endif %}" class="auth-form">
             {% csrf_token %}
 
             <div class="form-fields">
@@ -38,10 +39,10 @@
         <div class="auth-switch">
             {% if flag %}
                 <span>Нет аккаунта?</span>
-                <a href="?mode=register">Создать</a>
+                <a href="{% url "auth" "register" %}">Создать</a>
             {% else %}
                 <span>Уже есть аккаунт?</span>
-                <a href="?mode=login">Войти</a>
+                <a href="{% url "auth" "login" %}">Войти</a>
             {% endif %}
         </div>
     </div>
@@ -50,5 +51,4 @@
 {% endblock content %}
 
 {% block scripts %}
-<script src="{% static 'js/Authentication/script.js' %}"></script>
 {% endblock scripts %}

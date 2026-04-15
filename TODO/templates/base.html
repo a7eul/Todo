@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock title %}</title>
+
+    <link rel="stylesheet" href="{% static "css/style.css" %}">
+    {% block style %}{% endblock style %}
+</head>
+<body>
+
+    <div class="app">
+
+        <header class="header">
+            <h1 class="logo">My TODO</h1>
+        </header>
+
+        <main class="content">
+            {% block content %}{% endblock content %}
+        </main>
+
+        <footer class="footer">
+            <h3>© My TODO</h3>
+        </footer>
+
+    </div>
+
+    <script src="{% static "js/script.js" %}"></script>
+    {% block scripts %}{% endblock scripts %}
+</body>
+</html>

@@ -1,29 +1,42 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    // Анимация появления карточек
     const cards = document.querySelectorAll(".card");
 
     cards.forEach((card, index) => {
         card.style.opacity = "0";
-        card.style.transform = "translateY(10px)";
+        card.style.transform = "translateY(15px)";
 
         setTimeout(() => {
-            card.style.transition = "0.4s";
+            card.style.transition = "all 0.4s ease";
             card.style.opacity = "1";
             card.style.transform = "translateY(0)";
-        }, index * 100);
+        }, index * 80);
     });
 
-    // Hover glow для задач
-    const tasks = document.querySelectorAll(".task-card");
+});
+document.addEventListener("DOMContentLoaded", () => {
 
-    tasks.forEach(task => {
-        task.addEventListener("mouseenter", () => {
-            task.style.boxShadow = "0 0 20px rgba(0,150,255,0.3)";
+    const dropdowns = document.querySelectorAll(".dropdown");
+
+    dropdowns.forEach(drop => {
+        const btn = drop.querySelector(".dropdown-toggle");
+
+        btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+
+            // закрыть другие
+            document.querySelectorAll(".dropdown").forEach(d => {
+                if (d !== drop) d.classList.remove("active");
+            });
+
+            drop.classList.toggle("active");
         });
+    });
 
-        task.addEventListener("mouseleave", () => {
-            task.style.boxShadow = "";
+    // клик вне — закрыть
+    document.addEventListener("click", () => {
+        document.querySelectorAll(".dropdown").forEach(d => {
+            d.classList.remove("active");
         });
     });
 

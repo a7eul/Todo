@@ -1,197 +1,316 @@
-/* ===== MAIN WRAPPER ===== */
+/* =========================
+   ROOT + VARIABLES
+========================= */
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-blur: blur(20px);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --shadow-glow: 0 8px 32px rgba(0, 198, 255, 0.15);
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --red-gradient: linear-gradient(135deg, #ff6b6b, #ee5a52);
+}
+
+/* =========================
+   LAYOUT
+========================= */
 .main-wrapper {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 40px 20px;
-    width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+  position: relative;
+  overflow: hidden;
 }
 
-/* ===== СТАТИСТИКА ===== */
-.stats-card {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
-    padding: 24px;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    margin-bottom: 32px;
+.main-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
 }
 
+/* =========================
+   GLASS CARDS
+========================= */
+.card {
+  backdrop-filter: var(--glass-blur);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  padding: 2rem;
+  border-radius: 24px;
+  margin: 2rem 0;
+  box-shadow: var(--shadow-glow);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  padding: 2px;
+  background: var(--primary-gradient);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 198, 255, 0.25);
+}
+
+/* =========================
+   STATS ✨
+========================= */
 .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 16px;
-    margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
 }
 
 .stat-item {
-    padding: 20px 16px;
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
-    text-align: center;
-    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  padding: 1.5rem;
+  text-align: center;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.4s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
 
-.stat-item span {
-    display: block;
-    margin-top: 8px;
-    font-size: 22px;
-    font-weight: 700;
-    color: #60a5fa;
-    font-variant-numeric: tabular-nums; /* Числа не "прыгают" при изменении ширины */
+.stat-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.6s;
+}
+
+.stat-item:hover::before {
+  left: 100%;
 }
 
 .stat-item:hover {
-    transform: translateY(-2px);
-    border-color: rgba(96, 165, 250, 0.3);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  background: rgba(0, 198, 255, 0.1);
+  border-color: rgba(0, 198, 255, 0.3);
+  transform: translateY(-5px) scale(1.02);
 }
 
-/* ===== ЗАДАЧИ ===== */
-.tasks-container {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+.stat-item span {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #00c6ff, #667eea);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.task-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    padding: 18px 20px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
-    backdrop-filter: blur(8px);
-    transition: border-color 0.2s ease, background 0.2s ease;
-}
-
-.task-card:hover {
-    border-color: rgba(255, 255, 255, 0.15);
-    background: rgba(255, 255, 255, 0.06);
-}
-
-.task-info {
-    flex: 1;
-    min-width: 0; /* Предотвращает вылезание длинного текста */
-}
-
-.task-info h3 {
-    margin: 0 0 6px;
-    font-size: 16px;
-    color: #f8fafc;
-    font-weight: 600;
-}
-
-.task-info p {
-    margin: 0;
-    font-size: 13px;
-    color: #94a3b8;
-    line-height: 1.4;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.task-actions {
-    display: flex;
-    gap: 8px;
-    flex-shrink: 0;
-}
-
-/* ===== EMPTY STATE ===== */
-.empty {
-    text-align: center;
-    padding: 48px 20px;
-    background: rgba(0, 0, 0, 0.15);
-    border: 1px dashed rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    color: #94a3b8;
-}
-
-.empty p {
-    margin: 8px 0 0;
-    font-size: 14px;
-}
-
-/* ===== BUTTONS ===== */
-.create-btn, .logout-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 11px 20px;
-    font-size: 13px;
-    font-weight: 600;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    color: #ffffff;
-    font-family: inherit;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
-    text-decoration: none;
+/* =========================
+   CREATE BUTTON ✨
+========================= */
+.create-block {
+  margin: 2rem 0;
+  text-align: right;
 }
 
 .create-btn {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  background: var(--primary-gradient);
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 16px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.create-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s;
+}
+
+.create-btn:hover::before {
+  left: 100%;
 }
 
 .create-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
-    filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+}
+
+/* =========================
+   TASKS ✨
+========================= */
+.tasks-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.task-card {
+  position: relative;
+  overflow: hidden;
+  border-left: 4px solid transparent;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.task-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  border-left-color: #00c6ff;
+}
+
+/* STATUS COLORS ✨ */
+.task-card.status-0 { border-left-color: #6c757d !important; }
+.task-card.status-1 { border-left-color: #0d6efd !important; }
+.task-card.status-2 { border-left-color: #198754 !important; }
+.task-card.status-3 { border-left-color: #ffc107 !important; }
+.task-card.status-4 { border-left-color: #dc3545 !important; }
+
+.task-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* =========================
+   ACTIONS ✨
+========================= */
+.task-actions {
+  display: flex;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.edit-btn, .dropdown-toggle {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  opacity: 0.7;
+}
+
+.edit-btn:hover, .dropdown-toggle:hover {
+  background: rgba(0, 198, 255, 0.2);
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* DROPDOWN ✨ */
+.dropdown-menu {
+  position: absolute;
+  right: 1rem;
+  top: 3rem;
+  min-width: 200px;
+  padding: 1rem;
+  border-radius: 16px;
+  background: rgba(30, 30, 30, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-glow);
+  z-index: 100;
+}
+
+.dropdown.active .dropdown-menu {
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-menu select {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  font-size: 0.9rem;
+}
+
+.delete-btn {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 10px;
+  background: var(--red-gradient);
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+  transform: translateX(5px);
+  box-shadow: 0 5px 15px rgba(255, 77, 77, 0.4);
+}
+
+/* =========================
+   EMPTY + LOGOUT ✨
+========================= */
+.empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.2rem;
 }
 
 .logout-btn {
-    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
-    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+  background: var(--red-gradient);
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 16px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .logout-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(239, 68, 68, 0.45);
-    filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(255, 77, 77, 0.4);
 }
 
-.create-btn:focus-visible,
-.logout-btn:focus-visible {
-    outline: 2px solid #93c5fd;
-    outline-offset: 2px;
-}
-
-.create-btn:active,
-.logout-btn:active {
-    transform: translateY(0);
-}
-
-/* ===== BLOCKS ===== */
-.create-block {
-    margin-bottom: 24px;
-    display: flex;
-    justify-content: flex-end;
-}
-
-.logout-block {
-    margin-top: 48px;
-    text-align: center;
-    padding-top: 24px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 640px) {
-    .task-card {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-    }
-    .task-actions {
-        width: 100%;
-        justify-content: flex-end;
-    }
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .main-wrapper { padding: 1rem; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .task-content { flex-direction: column; align-items: flex-start; gap: 1rem; }
 }
