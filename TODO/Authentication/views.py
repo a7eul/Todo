@@ -24,7 +24,7 @@ def register(request):
         user = form.save()
         login(request, user)
         return redirect("main")
-    return redirect("auth", mode='register')
+    return render(request, "Authentication/index.html", {"flag": False, "form": form})
 
 def user_login(request):
     form = forms.AuthenticationForm(data=request.POST)
@@ -34,7 +34,7 @@ def user_login(request):
         user = authenticate(request, username=username, password=password)
         login(request, user)
         return redirect("main")
-    return redirect("auth", mode='login')
+    return render(request, "Authentication/index.html", {"flag": True, "form": form})
 
 def exit(request):
     logout(request)
