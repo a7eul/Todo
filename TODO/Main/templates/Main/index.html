@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}TODO{% endblock title %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static "css/Main/style.css" %}">
+{% endblock style %}
+
+{% block content %}
+
+<div class="main-wrapper">
+
+    <!-- СТАТИСТИКА -->
+    <div class="stats-card card">
+        <h3>Статистика</h3>
+
+        <div class="stats-grid">
+            <div class="stat-item">Принята <span>{{statistic.count_0}}</span></div>
+            <div class="stat-item">В разработке <span>{{statistic.count_1}}</span></div>
+            <div class="stat-item">Выполнена <span>{{statistic.count_2}}</span></div>
+            <div class="stat-item">Отложена <span>{{statistic.count_3}}</span></div>
+            <div class="stat-item">Провалена <span>{{statistic.count_4}}</span></div>
+        </div>
+    </div>
+    <!-- КНОПКА ДОБАВЛЕНИЯ -->
+    <div class="create-block">
+        <a href="{% url "create" %}">
+            <button class="btn create-btn">+ Добавить задачу</button>
+        </a>
+    </div>
+    <!-- СПИСОК ЗАДАЧ -->
+    <div class="tasks-container">
+        {% for i in tasks %}
+        <div class="task-card card">
+            <h4>{{ i.name }}</h4>
+
+            <div class="task-actions">
+                <form method="GET" action="{% url "update" %}">
+                    <input type="hidden" name="id" value="{{ i.id }}">
+                    <button class="btn">Редактировать</button>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <p class="empty">Нет задач</p>
+        {% endfor %}
+    </div>
+
+    <!-- LOGOUT -->
+    <div class="logout-block">
+        <a href="{% url "logout" %}">
+            <button class="btn logout-btn">Logout</button>
+        </a>
+    </div>
+
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+<script src="{% static "js/Main/script.js" %}"></script>
+{% endblock scripts %}

@@ -1,0 +1,211 @@
+/* Глобальный сброс (безопасный) */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    min-height: 100dvh; /* Современный fallback для мобильных браузеров */
+    padding: 20px;
+    background: linear-gradient(135deg, #0b0f19 0%, #111827 50%, #0f172a 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Двойное фоновое свечение для глубины glass-эффекта */
+.auth-wrapper::before,
+.auth-wrapper::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.5;
+    pointer-events: none;
+}
+.auth-wrapper::before {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+    top: -100px;
+    right: -100px;
+}
+.auth-wrapper::after {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+    bottom: -50px;
+    left: -50px;
+}
+
+/* CARD */
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 40px 32px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    animation: fadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    position: relative;
+    z-index: 1;
+}
+
+/* TITLE */
+.auth-title {
+    text-align: center;
+    margin: 0 0 24px;
+    color: #f8fafc;
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    line-height: 1.3;
+}
+
+/* FORM */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-fields p {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-fields label {
+    font-size: 12px;
+    color: #94a3b8;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+/* INPUTS (универсальные для Django) */
+.form-fields input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="hidden"]) {
+    width: 100%;
+    padding: 12px 14px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    color: #f8fafc;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+.form-fields input:focus-visible {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.form-fields input::placeholder {
+    color: #475569;
+    opacity: 1;
+}
+
+/* Django validation & hints */
+.form-fields .helptext {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 2px;
+    line-height: 1.4;
+}
+.form-fields .errorlist {
+    margin: 0 0 6px;
+    padding: 0;
+    list-style: none;
+    color: #f87171; /* Мягче чистого красного, лучше для восприятия */
+    font-size: 12px;
+    line-height: 1.4;
+}
+.form-fields .errorlist li {
+    margin-bottom: 2px;
+}
+
+/* BUTTON */
+.auth-btn {
+    margin-top: 8px;
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    font-family: inherit;
+}
+
+.auth-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+    filter: brightness(1.1);
+}
+
+.auth-btn:focus-visible {
+    outline: 2px solid #60a5fa;
+    outline-offset: 2px;
+}
+
+.auth-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
+
+.auth-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    filter: none;
+}
+
+/* SWITCH */
+.auth-switch {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 14px;
+    color: #94a3b8;
+    line-height: 1.5;
+}
+
+.auth-switch a {
+    color: #60a5fa;
+    margin-left: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s, text-decoration-color 0.2s;
+    text-underline-offset: 3px;
+}
+
+.auth-switch a:hover,
+.auth-switch a:focus-visible {
+    color: #93c5fd;
+    text-decoration: underline;
+}
+
+/* ANIMATION */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .auth-card { animation: none; }
+    .auth-btn, .auth-switch a, .form-fields input { transition: none; }
+}

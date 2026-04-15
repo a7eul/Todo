@@ -2,12 +2,11 @@ from django import forms
 from . import models
 
 class Task_form(forms.ModelForm):
-    text = forms.ImageField
     class Meta:
         model = models.Task
         fields = ["name", "description","tags"]
 
-        help_text = {
+        help_texts = {
             "name": "Введите свое имя",
             "description": "Описание отсутствует",
         }

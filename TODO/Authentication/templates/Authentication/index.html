@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Аутентификация{% endblock title %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/Authentication/style.css' %}">
+{% endblock style %}
+
+{% block content %}
+<div class="auth-wrapper">
+
+    <div class="auth-card">
+        <h2 class="auth-title">
+            {% if flag %}
+                Вход
+            {% else %}
+                Регистрация
+            {% endif %}
+        </h2>
+
+        <form method="POST" action="{% if flag %} {% url 'login' %} {% else %} {% url 'reg' %} {% endif %}" class="auth-form">
+            {% csrf_token %}
+
+            <div class="form-fields">
+                {{ form }}
+            </div>
+
+            <button type="submit" class="btn auth-btn">
+                {% if flag %}
+                    Войти
+                {% else %}
+                    Зарегистрироваться
+                {% endif %}
+            </button>
+        </form>
+
+        <div class="auth-switch">
+            {% if flag %}
+                <span>Нет аккаунта?</span>
+                <a href="?mode=register">Создать</a>
+            {% else %}
+                <span>Уже есть аккаунт?</span>
+                <a href="?mode=login">Войти</a>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script src="{% static 'js/Authentication/script.js' %}"></script>
+{% endblock scripts %}

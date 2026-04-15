@@ -1,0 +1,197 @@
+/* ===== MAIN WRAPPER ===== */
+.main-wrapper {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    width: 100%;
+}
+
+/* ===== СТАТИСТИКА ===== */
+.stats-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 24px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    margin-bottom: 32px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.stat-item {
+    padding: 20px 16px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    text-align: center;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-item span {
+    display: block;
+    margin-top: 8px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #60a5fa;
+    font-variant-numeric: tabular-nums; /* Числа не "прыгают" при изменении ширины */
+}
+
+.stat-item:hover {
+    transform: translateY(-2px);
+    border-color: rgba(96, 165, 250, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+/* ===== ЗАДАЧИ ===== */
+.tasks-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.task-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 20px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.task-card:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.task-info {
+    flex: 1;
+    min-width: 0; /* Предотвращает вылезание длинного текста */
+}
+
+.task-info h3 {
+    margin: 0 0 6px;
+    font-size: 16px;
+    color: #f8fafc;
+    font-weight: 600;
+}
+
+.task-info p {
+    margin: 0;
+    font-size: 13px;
+    color: #94a3b8;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.task-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+/* ===== EMPTY STATE ===== */
+.empty {
+    text-align: center;
+    padding: 48px 20px;
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #94a3b8;
+}
+
+.empty p {
+    margin: 8px 0 0;
+    font-size: 14px;
+}
+
+/* ===== BUTTONS ===== */
+.create-btn, .logout-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    color: #ffffff;
+    font-family: inherit;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    text-decoration: none;
+}
+
+.create-btn {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+
+.create-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+    filter: brightness(1.1);
+}
+
+.logout-btn {
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+}
+
+.logout-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(239, 68, 68, 0.45);
+    filter: brightness(1.1);
+}
+
+.create-btn:focus-visible,
+.logout-btn:focus-visible {
+    outline: 2px solid #93c5fd;
+    outline-offset: 2px;
+}
+
+.create-btn:active,
+.logout-btn:active {
+    transform: translateY(0);
+}
+
+/* ===== BLOCKS ===== */
+.create-block {
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.logout-block {
+    margin-top: 48px;
+    text-align: center;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+    .task-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    .task-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

@@ -1,0 +1,176 @@
+/* WRAPPER */
+.create-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 20px;
+    background: linear-gradient(135deg, #0b0f19 0%, #111827 50%, #0f172a 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Фоновое свечение (согласуется со страницей авторизации) */
+.create-wrapper::before,
+.create-wrapper::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.5;
+    pointer-events: none;
+}
+.create-wrapper::before {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+    top: -100px; right: -100px;
+}
+.create-wrapper::after {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+    bottom: -50px; left: -50px;
+}
+
+/* CARD */
+.create-card {
+    width: 100%;
+    max-width: 560px; /* Чуть шире для форм */
+    padding: 36px 32px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    animation: fadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* FORM LAYOUT (Django as_p compatible) */
+.create-form p {
+    margin: 0 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.create-form p:last-of-type {
+    margin-bottom: 0; /* Убираем отступ перед кнопкой */
+}
+
+.create-form label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+/* INPUTS / TEXTAREA / SELECT */
+.create-form input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]),
+.create-form textarea,
+.create-form select {
+    width: 100%;
+    padding: 12px 14px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    color: #f8fafc;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+.create-form textarea {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.create-form select {
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+}
+
+.create-form input:focus-visible,
+.create-form textarea:focus-visible,
+.create-form select:focus-visible {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* HELP TEXT & ERRORS */
+.create-form .helptext {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 2px;
+    line-height: 1.4;
+}
+
+.create-form .errorlist {
+    margin: 0 0 6px;
+    padding: 0;
+    list-style: none;
+    color: #f87171;
+    font-size: 12px;
+    line-height: 1.4;
+}
+.create-form .errorlist li { margin-bottom: 2px; }
+
+/* BUTTON */
+.create-btn {
+    width: 100%;
+    padding: 13px;
+    margin-top: 8px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+
+.create-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+    filter: brightness(1.1);
+}
+
+.create-btn:focus-visible {
+    outline: 2px solid #93c5fd;
+    outline-offset: 2px;
+}
+
+.create-btn:active {
+    transform: translateY(0);
+}
+
+.create-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    filter: none;
+}
+
+/* ANIMATION */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .create-card { animation: none; }
+    .create-btn, .create-form input, .create-form textarea, .create-form select { transition: none; }
+}
