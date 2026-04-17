@@ -1,41 +1,47 @@
 from django.shortcuts import render, redirect
-from . import forms
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, logout
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.urls import reverse  
+
+def redirect_to_auth(mode):
+    return redirect(reverse('auth_page', kwargs={'mode': mode}))
 
 def enter(request):
+    
     if request.user.is_authenticated:
         return redirect("main")
-    else:
-        return redirect("auth", mode='register')
-    
-
-def Authentication(request, mode):
+    return redirect_to_auth("register")  
+def auth_page(request, mode="register"):
+   
     if mode == "register":
-        form = forms.UserCreationForm()
-        flag = False
+        form = UserCreationForm()
+        flag = False  
     else:
-        form = forms.AuthenticationForm()
+        form = AuthenticationForm(request) 
         flag = True
-    return render(request, "Authentication/index.html", {"flag":flag , "form":form})
+    return render(request, "Authentication/index.html", {"flag": flag, "form": form})
 
 def register(request):
-    form = forms.UserCreationForm(data=request.POST)
+    if request.method != "POST":
+        return redirect_to_auth("register")
+    
+    form = UserCreationForm(request.POST)
     if form.is_valid():
         user = form.save()
-        login(request, user)
-        return redirect("main")
+        login(request, user)  
     return render(request, "Authentication/index.html", {"flag": False, "form": form})
 
 def user_login(request):
-    form = forms.AuthenticationForm(data=request.POST)
+    if request.method != "POST":
+        return redirect_to_auth("login")
+    
+    form = AuthenticationForm(request, data=request.POST) 
     if form.is_valid():
-        username = form.cleaned_data["username"]
-        password = form.cleaned_data["password"]
-        user = authenticate(request, username=username, password=password)
+        user = form.get_user()
         login(request, user)
         return redirect("main")
     return render(request, "Authentication/index.html", {"flag": True, "form": form})
 
-def exit(request):
+def user_logout(request):  
     logout(request)
-    return redirect("auth", mode="register")
+    return redirect_to_auth("register")

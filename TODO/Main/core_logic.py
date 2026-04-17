@@ -1,39 +1,45 @@
-from . import models, forms
-from django.db.models import Q, Count, QuerySet
-from django.contrib.auth import get_user_model
+from django.db.models import Q, Count
+from .forms import TaskForm
 from .models import Task
-from .forms import Task_form
+from django.utils import timezone
 
-def get_filter_task(user: models.User, progress = -1, tag = "_"):
-    tasks = user.task
-    if tag == "_" and progress == -1:
-        list_task = tasks.all()
-    else:
-        list_task = tasks.filter(Q(progress = progress) & Q(tags = tag))
-    return list_task
+def get_filter_task(user, progress=-1, tag="_", search=""):
+    tasks = user.tasks.all()
+    if search:
+        tasks = tasks.filter(
+            Q(name__icontains=search) | Q(description__icontains=search)
+        )
+    if tag != "_":
+        tasks = tasks.filter(tags=tag)
+    if progress != -1:
+        tasks = tasks.filter(progress=progress)
+    return tasks
 
 def get_statistical(user):
-    tasks = user.task
-    counts = tasks.aggregate(   # aggregate и annotate применяються ко всей таблице а не к конкретному объекту
-        count_0 = Count("progress", filter=Q(progress = 0)),
-        count_1 = Count("progress", filter=Q(progress = 1)),
-        count_2 = Count("progress", filter=Q(progress = 2)),
-        count_3 = Count("progress", filter=Q(progress = 3)),
-        count_4 = Count("progress", filter=Q(progress = 4)),
-        )
-    # print(tasks[0].count_1) aggregate не дополняет текущую таблицу в отличии от annotate
+    tasks = user.tasks
+    
+    counts = tasks.aggregate(
+        count_active=Count("progress", filter=Q(progress=0)),
+        count_work=Count("progress", filter=Q(progress=1)),
+        count_completed=Count("progress", filter=Q(progress=2)),
+        count_failed=Count("progress", filter=Q(progress=3)),
+        count_postponed=Count("progress", filter=Q(progress=4)),
+    )
     return counts
 
 def updateTask(request):
+    task_id = request.GET.get("id") if request.method == "GET" else request.POST.get("id")
+    
+    try:
+        task = Task.objects.get(id=task_id, author=request.user)
+    except Task.DoesNotExist:
+        return False 
+
     if request.method == "GET":
-        id = request.GET.get("id")
-        task = models.Task.objects.get(id = id)
-        form = forms.Task_form(instance=task)
-        return form
+        return TaskForm(instance=task)
+    
     elif request.method == "POST":
-        id = request.GET.get("id")
-        task = models.Task.objects.get(id = id)
-        form = forms.Task_form(data=request.POST, instance=task)
+        form = TaskForm(data=request.POST, instance=task)
         if form.is_valid():
             form.save()
             return True
@@ -42,10 +48,10 @@ def updateTask(request):
 
 def createTask(request):
     if request.method == "GET":
-        form = forms.Task_form()
-        return form
+        return TaskForm()
+    
     elif request.method == "POST":
-        form = forms.Task_form(data=request.POST)
+        form = TaskForm(data=request.POST)
         if form.is_valid():
             task = form.save(commit=False)
             task.author = request.user
@@ -55,13 +61,31 @@ def createTask(request):
     return None
 
 def changeState(request):
-    id = request.POST.get("id")
+    task_id = request.POST.get("id")
     state = request.POST.get("state")
-    task = models.Task.objects.get(id=id)
-    task.progress = state
-    task.save()
     
+    try:
+        task = Task.objects.get(id=task_id, author=request.user)
+        task.progress = state
+        task.save()
+    except Task.DoesNotExist:
+        pass 
+
 def deleteTask(request):
-    id = request.POST.get("id")
-    task = models.Task.objects.get(id=id)
-    task.delete()
+    task_id = request.POST.get("id")
+    
+    try:
+        task = Task.objects.get(id=task_id, author=request.user)
+        task.delete()
+    except Task.DoesNotExist:
+        pass 
+
+def check_overdue_tasks(user):
+    now = timezone.now()
+    overdue = user.tasks.filter(
+        deadline__lt=now,  
+        deadline__isnull=False,
+        progress__in=[0, 1]  
+    )
+    updated = overdue.update(progress=3)
+    return updated  

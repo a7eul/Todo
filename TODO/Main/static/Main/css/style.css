@@ -314,3 +314,65 @@
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .task-content { flex-direction: column; align-items: flex-start; gap: 1rem; }
 }
+
+/* =========================
+   DEADLINE & OVERDUE
+========================= */
+
+/* Красное свечение для просроченных задач */
+:root {
+  --danger-glow: 0 8px 32px rgba(220, 53, 69, 0.35);
+  --deadline-color: rgba(255, 255, 255, 0.5);
+}
+
+.task-card.is-overdue {
+  border-left-color: #dc3545 !important; /* Красная полоса */
+  box-shadow: var(--danger-glow);
+  animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+  0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+}
+
+/* Стилизация даты дедлайна */
+.deadline-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--deadline-color);
+  margin-top: 8px;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  width: fit-content;
+}
+
+.deadline-info i {
+  font-size: 1rem;
+}
+
+/* Текст даты, если просрочено */
+.deadline-info.text-danger {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+/* Бейдж "ПРОСРОЧЕНО" */
+.overdue-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  margin-left: 10px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #fff;
+  background: var(--red-gradient);
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+}

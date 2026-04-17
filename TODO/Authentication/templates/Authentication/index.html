@@ -20,7 +20,7 @@
             {% endif %}
         </h2>
 
-        <form method="POST" action="{% if flag %} {% url "login" %} {% else %} {% url "reg" %} {% endif %}" class="auth-form">
+        <form method="POST" action="{% if flag %} {% url "login" %} {% else %} {% url "register" %} {% endif %}" class="auth-form">
             {% csrf_token %}
 
             <div class="form-fields">
@@ -39,10 +39,10 @@
         <div class="auth-switch">
             {% if flag %}
                 <span>Нет аккаунта?</span>
-                <a href="{% url "auth" "register" %}">Создать</a>
+                <a href="{% url "auth_page" "register" %}">Создать</a>
             {% else %}
                 <span>Уже есть аккаунт?</span>
-                <a href="{% url "auth" "login" %}">Войти</a>
+                <a href="{% url "auth_page" "login" %}">Войти</a>
             {% endif %}
         </div>
     </div>

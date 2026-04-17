@@ -4,7 +4,7 @@
 {% block title %}TODO{% endblock title %}
 
 {% block style %}
-<link rel="stylesheet" href="{% static "css/Main/style.css" %}">
+<link rel="stylesheet" href="{% static "Main/css/style.css" %}">
 {% endblock style %}
 
 {% block content %}
@@ -19,85 +19,129 @@
             <div class="stat-item">Принята <span>{{statistic.count_0}}</span></div>
             <div class="stat-item">В разработке <span>{{statistic.count_1}}</span></div>
             <div class="stat-item">Выполнена <span>{{statistic.count_2}}</span></div>
-            <div class="stat-item">Отложена <span>{{statistic.count_3}}</span></div>
-            <div class="stat-item">Провалена <span>{{statistic.count_4}}</span></div>
+            <div class="stat-item">Просрочена <span>{{statistic.count_3}}</span></div>
+            <div class="stat-item">Отложена <span>{{statistic.count_4}}</span></div>
         </div>
     </div>
+
     <!-- КНОПКА ДОБАВЛЕНИЯ -->
     <div class="create-block">
         <a href="{% url "create" %}">
             <button class="btn create-btn">+ Добавить задачу</button>
         </a>
     </div>
+
+    <!--  УМНЫЙ ПОИСК (НОВОЕ) -->
+    <div class="search-block" style="margin-bottom: 15px;">
+        <form method="GET" action="{% url 'main' %}" class="search-form">
+            <input 
+                type="text" 
+                name="search" 
+                class="search-input" 
+                placeholder="Поиск по названию или описанию..." 
+                value="{{ search_query }}"
+                style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; width: 60%; margin-right: 8px;"
+            >
+            <button type="submit" class="btn search-btn" style="padding: 8px 16px;">Найти</button>
+            {% if search_query %}
+                <a href="{% url 'main' %}" class="btn reset-btn" style="padding: 8px 12px; text-decoration: none; color: #666;">✕ Сбросить</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- ФИЛЬТРЫ -->
     <div class="filter_block">
         <form method="POST" action="{% url "filter" %}">
             {% csrf_token %}
-            <select  name="state" class="filter_el">
-                <option value="0" {% if i.progress == 0 %} selected {% endif %}>Принята</option>
-                <option value="1" {% if i.progress == 1 %} selected {% endif %}>В разработке</option>
-                <option value="2" {% if i.progress == 2 %} selected {% endif %}>Выполнена</option>
-                <option value="3" {% if i.progress == 3 %} selected {% endif %}>Отложена</option>
-                <option value="4" {% if i.progress == 4 %} selected {% endif %}>Провалена</option>
+            <select name="state" class="filter_el">
+                <option value="-1" {% if request.POST.state == "-1" or not request.POST.state %}selected{% endif %}>Все статусы</option>
+                <option value="0" {% if request.POST.state == "0" %}selected{% endif %}>Принята</option>
+                <option value="1" {% if request.POST.state == "1" %}selected{% endif %}>В разработке</option>
+                <option value="2" {% if request.POST.state == "2" %}selected{% endif %}>Выполнена</option>
+                <option value="3" {% if request.POST.state == "3" %}selected{% endif %}>Просрочена</option>
+                <option value="4" {% if request.POST.state == "4" %}selected{% endif %}>Отложена</option>
             </select>
-            <select  name="tag" class="filter_el">
-                <option value="work" {% if i.progress == 0 %} selected {% endif %}>Работа</option>
-                <option value="home" {% if i.progress == 1 %} selected {% endif %}>Дом</option>
-                <option value="my_tasks" {% if i.progress == 2 %} selected {% endif %}>Мои задачи</option>
+            <select name="tag" class="filter_el">
+                <option value="_" {% if request.POST.tag == "_" or not request.POST.tag %}selected{% endif %}>Все теги</option>
+                <option value="work" {% if request.POST.tag == "work" %}selected{% endif %}>Работа</option>
+                <option value="home" {% if request.POST.tag == "home" %}selected{% endif %}>Дом</option>
+                <option value="my_tasks" {% if request.POST.tag == "my_tasks" %}selected{% endif %}>Мои задачи</option>
             </select>
             <input type="submit" value="Фильтр">
-
         </form>
-         
     </div>
+
     <!-- СПИСОК ЗАДАЧ -->
     <div class="tasks-container">
         {% for i in tasks %}
-        <div class="task-card card status-{{ i.progress }}">
+        
+        <!-- Добавляем класс is-overdue, если статус 3 (Просрочено/Провалено) -->
+        <div class="task-card card status-{{ i.progress }} {% if i.progress == 3 %}is-overdue{% endif %}">
     
-    <!-- ✏️ Редактирование -->
-    <a href="{% url "update" %}?id={{ i.id }}" class="edit-btn">
-        ✏️
-    </a>
+            <!--  Редактирование -->
+            <a href="{% url "update" %}?id={{ i.id }}" class="edit-btn">Редактировать</a>
 
-    <div class="task-content">
-        <h4>{{ i.name }}</h4>
+            <div class="task-content">
+                <!-- ЛЕВАЯ ЧАСТЬ: Инфо о задаче -->
+                <div class="task-info">
+                    <h4>
+                        {{ i.name }}
+                        <!-- Если статус 3 (Просрочена), показываем бейдж -->
+                        {% if i.progress == 3 %}
+                            <span class="overdue-badge">Просрочено</span>
+                        {% endif %}
+                    </h4>
+                    
+                    <p class="task-desc">{{ i.description|truncatewords:15 }}</p>
 
-        <div class="dropdown">
-            <button class="dropdown-toggle">⋮</button>
+                    <!--  Дедлайн -->
+                    {% if i.deadline %}
+                        <div class="deadline-display {% if i.progress == 3 %}text-danger{% endif %}">
+                             {{ i.deadline|date:"d.m.Y H:i" }}
+                        </div>
+                    {% endif %}
+                </div>
 
-            <div class="dropdown-menu">
+                <!-- ПРАВАЯ ЧАСТЬ: Меню действий -->
+                <div class="task-actions">
+                    <div class="dropdown">
+                        <button class="dropdown-toggle">⋮</button>
 
-                <!-- СМЕНА СТАТУСА -->
-                <form method="POST" action="{% url "state" %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="id" value="{{ i.id }}">
+                        <div class="dropdown-menu">
+                            <!-- СМЕНА СТАТУСА -->
+                        <form method="POST" action="{% url 'state' %}" id="status-form-{{ i.id }}">
+                            {% csrf_token %}
+                            <input type="hidden" name="id" value="{{ i.id }}">
+                            <!-- Добавили onchange="changeStatus(...)" -->
+                            <select name="state" class="status-select" onchange="changeStatus({{ i.id }})">
+                                <option value="0" {% if i.progress == 0 %}selected{% endif %}>Принята</option>
+                                <option value="1" {% if i.progress == 1 %}selected{% endif %}>В разработке</option>
+                                <option value="2" {% if i.progress == 2 %}selected{% endif %}>Выполнена</option>
+                                <option value="3" {% if i.progress == 3 %}selected{% endif %}>Просрочена/Просрочена</option>
+                                <option value="4" {% if i.progress == 4 %}selected{% endif %}>Отложена</option>
+                            </select>
+                        </form>
 
-                    <select name="state" onchange="this.form.submit()">
-                        <option value="0" {% if i.progress == 0 %} selected {% endif %}>Принята</option>
-                        <option value="1" {% if i.progress == 1 %} selected {% endif %}>В разработке</option>
-                        <option value="2" {% if i.progress == 2 %} selected {% endif %}>Выполнена</option>
-                        <option value="3" {% if i.progress == 3 %} selected {% endif %}>Отложена</option>
-                        <option value="4" {% if i.progress == 4 %} selected {% endif %}>Провалена</option>
-                    </select>
-                </form>
+                            <div class="dropdown-divider"></div>
 
-                <!-- РАЗДЕЛИТЕЛЬ -->
-                <div class="dropdown-divider"></div>
-
-                <!-- УДАЛЕНИЕ -->
-                <form method="POST" action="{% url "delete" %}" onsubmit="return confirm('Удалить задачу?')">
-                    {% csrf_token %}
-                    <input type="hidden" name="id" value="{{ i.id }}">
-                    <button class="delete-btn">🗑️ Удалить</button>
-                </form>
-
+                            <!-- УДАЛЕНИЕ -->
+                            <form method="POST" action="{% url "delete" %}" onsubmit="return confirm('Удалить задачу?')">
+                                {% csrf_token %}
+                                <input type="hidden" name="id" value="{{ i.id }}">
+                                <button class="delete-btn">Удалить</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-    </div>
-</div>
         {% empty %}
-        <p class="empty">Нет задач</p>
+            {% if search_query %}
+                <p class="empty">По запросу "{{ search_query }}" ничего не найдено</p>
+            {% else %}
+                <p class="empty">Нет задач</p>
+            {% endif %}
         {% endfor %}
     </div>
 
@@ -113,5 +157,44 @@
 {% endblock content %}
 
 {% block scripts %}
-<script src="{% static "js/Main/script.js" %}"></script>
+<script src="{% static "Main/js/script.js" %}"></script>
+
+<script>
+function changeStatus(taskId) {
+    const form = document.getElementById(`status-form-${taskId}`);
+    if (!form) return;
+    
+    const select = form.querySelector('select');
+    const originalValue = select.value;
+    
+
+    select.disabled = true;
+    select.style.opacity = '0.6';
+    
+    const formData = new FormData(form);
+    
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+        }
+    })
+    .then(response => {
+        if (response.ok || response.redirected) {
+            window.location.reload(); 
+        } else {
+            select.value = originalValue; 
+            alert('Ошибка при изменении статуса');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        select.value = originalValue;
+        select.disabled = false;
+        select.style.opacity = '1';
+        alert('Произошла ошибка. Попробуйте ещё раз.');
+    });
+}
+</script>
 {% endblock scripts %}
