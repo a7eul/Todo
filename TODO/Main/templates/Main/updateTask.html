@@ -4,7 +4,7 @@
 {% block title %}Редактирование задачи{% endblock title %}
 
 {% block style %}
-<link rel="stylesheet" href="{% static "Main/css/style2 .css" %}">
+<link rel="stylesheet" href="{% static "Main/css/style2.css" %}">
 {% endblock style %}
 
 {% block content %}
@@ -19,7 +19,7 @@
 
             {{ form }}
             <input type="hidden" name="id" value="{{ task.id }}">
-            <input type="submit" value="Рендактировать" class="btn">
+            <input type="submit" value="Редактировать" class="btn">
         </form>
     </div>
 

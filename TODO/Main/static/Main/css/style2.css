@@ -1,176 +1,406 @@
-/* WRAPPER */
-.create-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    min-height: 100dvh;
-    padding: 20px;
-    background: linear-gradient(135deg, #0b0f19 0%, #111827 50%, #0f172a 100%);
-    position: relative;
-    overflow: hidden;
+/* =========================
+   ROOT + VARIABLES
+========================= */
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-blur: blur(20px);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --shadow-glow: 0 8px 32px rgba(0, 198, 255, 0.15);
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --red-gradient: linear-gradient(135deg, #ff6b6b, #ee5a52);
+  --input-bg: rgba(0, 0, 0, 0.2);
+  --input-border: rgba(255, 255, 255, 0.12);
+  --input-focus: rgba(102, 126, 234, 0.25);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-error: #f87171;
+  --text-help: #64748b;
 }
 
-/* Фоновое свечение (согласуется со страницей авторизации) */
+/* =========================
+   RESET & BASE
+========================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #0b0f19 0%, #111827 50%, #0f172a 100%);
+  color: var(--text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* =========================
+   WRAPPER
+========================= */
+.create-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 2rem 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Фоновое свечение */
 .create-wrapper::before,
 .create-wrapper::after {
-    content: '';
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.5;
-    pointer-events: none;
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 0;
 }
+
 .create-wrapper::before {
-    width: 500px; height: 500px;
-    background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
-    top: -100px; right: -100px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+  top: -150px;
+  right: -150px;
 }
+
 .create-wrapper::after {
-    width: 400px; height: 400px;
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
-    bottom: -50px; left: -50px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(118, 75, 162, 0.1) 0%, transparent 70%);
+  bottom: -100px;
+  left: -100px;
 }
 
-/* CARD */
+/* =========================
+   CARD
+========================= */
 .create-card {
-    width: 100%;
-    max-width: 560px; /* Чуть шире для форм */
-    padding: 36px 32px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 20px;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    animation: fadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  width: 100%;
+  max-width: 580px;
+  padding: 2.5rem 2rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  position: relative;
+  z-index: 1;
+  animation: fadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
-/* FORM LAYOUT (Django as_p compatible) */
+.create-card h2 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  text-align: center;
+  background: linear-gradient(135deg, #fff, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Свечение по краю карточки при наведении */
+.create-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  padding: 2px;
+  background: var(--primary-gradient);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.create-card:hover::before {
+  opacity: 1;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =========================
+   FORM LAYOUT (Django as_p)
+========================= */
+.create-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Django выводит поля в <p> тегах */
 .create-form p {
-    margin: 0 0 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-.create-form p:last-of-type {
-    margin-bottom: 0; /* Убираем отступ перед кнопкой */
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
 }
 
+/* Скрываем лишние <br> от Django */
+.create-form p br {
+  display: none;
+}
+
+/* Labels */
 .create-form label {
-    font-size: 12px;
-    font-weight: 500;
-    color: #94a3b8;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 0.25rem;
 }
 
-/* INPUTS / TEXTAREA / SELECT */
+/* =========================
+   INPUTS / TEXTAREA / SELECT
+========================= */
 .create-form input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]),
 .create-form textarea,
 .create-form select {
-    width: 100%;
-    padding: 12px 14px;
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 10px;
-    color: #f8fafc;
-    font-size: 14px;
-    font-family: inherit;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+.create-form input::placeholder,
+.create-form textarea::placeholder {
+  color: var(--text-help);
+  opacity: 1;
 }
 
 .create-form textarea {
-    min-height: 120px;
-    resize: vertical;
-    line-height: 1.5;
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.6;
 }
 
 .create-form select {
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    padding-right: 36px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 40px;
 }
 
+/* Focus states */
 .create-form input:focus-visible,
 .create-form textarea:focus-visible,
 .create-form select:focus-visible {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
-    background: rgba(0, 0, 0, 0.3);
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px var(--input-focus);
+  background: rgba(0, 0, 0, 0.3);
 }
 
-/* HELP TEXT & ERRORS */
+/* DateTime input - тёмная тема календаря */
+.create-form input[type="datetime-local"] {
+  color-scheme: dark;
+  accent-color: #667eea;
+}
+
+.create-form input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.8);
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.create-form input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* =========================
+   HELP TEXT & ERRORS
+========================= */
 .create-form .helptext {
-    font-size: 12px;
-    color: #64748b;
-    margin-top: 2px;
-    line-height: 1.4;
+  font-size: 0.75rem;
+  color: var(--text-help);
+  margin-top: 0.25rem;
+  line-height: 1.4;
 }
 
 .create-form .errorlist {
-    margin: 0 0 6px;
-    padding: 0;
-    list-style: none;
-    color: #f87171;
-    font-size: 12px;
-    line-height: 1.4;
+  list-style: none;
+  margin: 0.25rem 0 0 0;
+  padding: 0;
 }
-.create-form .errorlist li { margin-bottom: 2px; }
 
-/* BUTTON */
-.create-btn {
-    width: 100%;
+.create-form .errorlist li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-error);
+  background: rgba(248, 113, 113, 0.1);
+  border-left: 3px solid var(--text-error);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 0.25rem;
+}
+
+.create-form .errorlist li::before {
+  content: '⚠️';
+  font-size: 0.9rem;
+}
+
+/* =========================
+   CHECKBOX / RADIO (если понадобятся)
+========================= */
+.create-form input[type="checkbox"],
+.create-form input[type="radio"] {
+  width: auto;
+  margin: 0;
+  accent-color: #667eea;
+  cursor: pointer;
+}
+
+.create-form input[type="checkbox"] + label,
+.create-form input[type="radio"] + label {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* =========================
+   SUBMIT BUTTON
+========================= */
+.create-form input[type="submit"],
+.create-form .btn {
+  width: 100%;
+  padding: 14px 20px;
+  margin-top: 0.5rem;
+  background: var(--primary-gradient);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px rgba(102, 126, 234, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+.create-form input[type="submit"]::before,
+.create-form .btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  transition: left 0.5s ease;
+}
+
+.create-form input[type="submit"]:hover::before,
+.create-form .btn:hover::before {
+  left: 100%;
+}
+
+.create-form input[type="submit"]:hover,
+.create-form .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+  filter: brightness(1.05);
+}
+
+.create-form input[type="submit"]:active,
+.create-form .btn:active {
+  transform: translateY(0);
+}
+
+.create-form input[type="submit"]:disabled,
+.create-form .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  filter: none;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 640px) {
+  .create-wrapper {
+    padding: 1rem;
+  }
+  
+  .create-card {
+    padding: 2rem 1.5rem;
+    max-width: 100%;
+  }
+  
+  .create-card h2 {
+    font-size: 1.5rem;
+  }
+  
+  .create-form input:not([type="submit"]),
+  .create-form textarea,
+  .create-form select {
+    padding: 12px 14px;
+    font-size: 0.95rem;
+  }
+  
+  .create-form input[type="submit"],
+  .create-form .btn {
     padding: 13px;
-    margin-top: 8px;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: 600;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-family: inherit;
-    transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    font-size: 0.95rem;
+  }
 }
 
-.create-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
-    filter: brightness(1.1);
-}
-
-.create-btn:focus-visible {
-    outline: 2px solid #93c5fd;
-    outline-offset: 2px;
-}
-
-.create-btn:active {
-    transform: translateY(0);
-}
-
-.create-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-    filter: none;
-}
-
-/* ANIMATION */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px) scale(0.98); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
+/* =========================
+   REDUCED MOTION
+========================= */
 @media (prefers-reduced-motion: reduce) {
-    .create-card { animation: none; }
-    .create-btn, .create-form input, .create-form textarea, .create-form select { transition: none; }
+  .create-card {
+    animation: none;
+  }
+  
+  .create-card::before,
+  .create-form input[type="submit"]::before,
+  .create-form .btn::before,
+  .create-form input,
+  .create-form textarea,
+  .create-form select {
+    transition: none;
+  }
+  
+  .create-form input[type="submit"]:hover,
+  .create-form .btn:hover {
+    transform: none;
+  }
 }

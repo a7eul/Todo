@@ -8,6 +8,8 @@
   --shadow-glow: 0 8px 32px rgba(0, 198, 255, 0.15);
   --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   --red-gradient: linear-gradient(135deg, #ff6b6b, #ee5a52);
+  --danger-glow: 0 8px 32px rgba(220, 53, 69, 0.35);
+  --deadline-color: rgba(255, 255, 255, 0.5);
 }
 
 /* =========================
@@ -71,7 +73,7 @@
 }
 
 /* =========================
-   STATS ✨
+   STATS
 ========================= */
 .stats-grid {
   display: grid;
@@ -125,7 +127,7 @@
 }
 
 /* =========================
-   CREATE BUTTON ✨
+   CREATE BUTTON
 ========================= */
 .create-block {
   margin: 2rem 0;
@@ -142,6 +144,8 @@
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
+  color: #fff;
+  cursor: pointer;
 }
 
 .create-btn::before {
@@ -165,48 +169,93 @@
 }
 
 /* =========================
-   TASKS ✨
+   TASKS
 ========================= */
-.tasks-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin-top: 2rem;
-}
+  .tasks-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
 
-.task-card {
-  position: relative;
-  overflow: hidden;
-  border-left: 4px solid transparent;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
+  .task-card {
+    position: relative;
+    /* overflow: hidden;  ← УБРАНО! Иначе меню не покажется */
+    border-left: 4px solid transparent;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
 
-.task-card:hover {
-  transform: translateY(-4px) scale(1.01);
-  border-left-color: #00c6ff;
-}
+  .task-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    border-left-color: #00c6ff;
+  }
 
-/* STATUS COLORS ✨ */
-.task-card.status-0 { border-left-color: #6c757d !important; }
-.task-card.status-1 { border-left-color: #0d6efd !important; }
-.task-card.status-2 { border-left-color: #198754 !important; }
-.task-card.status-3 { border-left-color: #ffc107 !important; }
-.task-card.status-4 { border-left-color: #dc3545 !important; }
+  /* STATUS COLORS */
+  .task-card.status-0 { border-left-color: #6c757d !important; }
+  .task-card.status-1 { border-left-color: #0d6efd !important; }
+  .task-card.status-2 { border-left-color: #198754 !important; }
+  .task-card.status-3 { border-left-color: #ffc107 !important; }
+  .task-card.status-4 { border-left-color: #dc3545 !important; }
 
-.task-content {
-  display: flex;
-  justify-content: space-between;
+  .task-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    overflow: visible !important; /* ВАЖНО! */
+    position: relative;
+  }
+
+  /* =========================
+    TASK INTERNAL LAYOUT
+  ========================= */
+  .task-info { 
+    flex: 1; 
+    min-width: 0; 
+  }
+
+  .task-info h4 {
+    margin: 0 0 6px 0;
+    font-size: 1.15rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .task-desc {
+    margin: 0 0 10px 0;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+.deadline-display {
+  display: inline-flex;
   align-items: center;
-  gap: 1.5rem;
-  padding: 1.5rem;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  gap: 6px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.deadline-display.text-danger {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+  border-color: rgba(255, 107, 107, 0.3);
 }
 
 /* =========================
-   ACTIONS ✨
+   ACTIONS
 ========================= */
 .task-actions {
   display: flex;
@@ -214,82 +263,255 @@
   flex-shrink: 0;
 }
 
-.edit-btn, .dropdown-toggle {
+.edit-btn {
   background: none;
   border: none;
-  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.6) !important;
+  text-decoration: none !important;
+  font-size: 0.9rem;
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 12px;
   transition: all 0.3s ease;
   opacity: 0.7;
+  display: inline-block;
 }
 
-.edit-btn:hover, .dropdown-toggle:hover {
+.edit-btn:hover {
   background: rgba(0, 198, 255, 0.2);
   opacity: 1;
   transform: scale(1.1);
+  color: #60a5fa !important;
 }
 
-/* DROPDOWN ✨ */
+/* =========================
+   DROPDOWN (ИСПРАВЛЕНО!)
+========================= */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
 .dropdown-menu {
   position: absolute;
-  right: 1rem;
-  top: 3rem;
-  min-width: 200px;
-  padding: 1rem;
-  border-radius: 16px;
-  background: rgba(30, 30, 30, 0.95);
+  right: 0;
+  top: 100%;
+  margin-top: -70px;
+  min-width: 220px;
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(20, 20, 30, 0.98);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: var(--shadow-glow);
-  z-index: 100;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.25s ease;
+  pointer-events: none;
 }
 
-.dropdown.active .dropdown-menu {
-  animation: slideDown 0.3s ease;
+/* ВАЖНО: показываем и при наведении на dropdown, И при наведении на само меню */
+.dropdown:hover .dropdown-menu,
+.dropdown.active .dropdown-menu,
+.dropdown-menu:hover {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.dropdown-menu select {
+.status-select {
   width: 100%;
-  padding: 0.75rem;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 10px 36px 10px 12px;
   background: rgba(255, 255, 255, 0.05);
-  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  color: #fff;
   font-size: 0.9rem;
+  cursor: pointer;
+  margin-bottom: 8px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+} 
+
+.status-select option {
+  background: #1a1a2e;
+  color: #fff;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 10px 0;
 }
 
 .delete-btn {
   width: 100%;
-  padding: 0.75rem;
+  padding: 10px;
+  background: var(--red-gradient);
   border: none;
   border-radius: 10px;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.delete-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+}
+
+/* =========================
+   DEADLINE & OVERDUE
+========================= */
+.task-card.is-overdue {
+  border-left-color: #dc3545 !important;
+  box-shadow: var(--danger-glow);
+  animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+  0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+}
+
+.overdue-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  margin-left: 10px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #fff;
   background: var(--red-gradient);
-  color: white;
-  font-weight: 500;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+}
+
+/* =========================
+   SEARCH & FILTER FORMS
+========================= */
+.search-block { 
+  margin-bottom: 1.5rem; 
+}
+
+.search-form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: #667eea;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.search-btn, 
+.filter_block input[type="submit"] {
+  background: var(--primary-gradient);
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
-.delete-btn:hover {
-  transform: translateX(5px);
-  box-shadow: 0 5px 15px rgba(255, 77, 77, 0.4);
+.search-btn:hover, 
+.filter_block input[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.35);
+}
+
+.reset-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 12px;
+  text-decoration: none !important;
+  transition: all 0.3s ease;
+}
+
+.reset-btn:hover { 
+  background: rgba(255, 255, 255, 0.2); 
+}
+
+.filter_block {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.filter_block form {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.filter_el {
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+  min-width: 150px;
+}
+
+.filter_el:focus { 
+  border-color: #667eea; 
+  outline: none; 
+}
+
+.filter_block input[type="submit"] {
+  flex: 0 0 auto;
 }
 
 /* =========================
-   EMPTY + LOGOUT ✨
+   EMPTY + LOGOUT
 ========================= */
 .empty {
   text-align: center;
   padding: 4rem 2rem;
   color: rgba(255, 255, 255, 0.6);
   font-size: 1.2rem;
+}
+
+.logout-block {
+  margin-top: 2rem;
 }
 
 .logout-btn {
@@ -308,71 +530,46 @@
   box-shadow: 0 10px 25px rgba(255, 77, 77, 0.4);
 }
 
-/* RESPONSIVE */
-@media (max-width: 768px) {
-  .main-wrapper { padding: 1rem; }
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .task-content { flex-direction: column; align-items: flex-start; gap: 1rem; }
+/* =========================
+   UTILITIES
+========================= */
+.text-danger { 
+  color: #ff6b6b !important; 
 }
 
 /* =========================
-   DEADLINE & OVERDUE
+   RESPONSIVE
 ========================= */
-
-/* Красное свечение для просроченных задач */
-:root {
-  --danger-glow: 0 8px 32px rgba(220, 53, 69, 0.35);
-  --deadline-color: rgba(255, 255, 255, 0.5);
-}
-
-.task-card.is-overdue {
-  border-left-color: #dc3545 !important; /* Красная полоса */
-  box-shadow: var(--danger-glow);
-  animation: pulse-red 2s infinite;
-}
-
-@keyframes pulse-red {
-  0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
-}
-
-/* Стилизация даты дедлайна */
-.deadline-info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.85rem;
-  color: var(--deadline-color);
-  margin-top: 8px;
-  padding: 4px 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  width: fit-content;
-}
-
-.deadline-info i {
-  font-size: 1rem;
-}
-
-/* Текст даты, если просрочено */
-.deadline-info.text-danger {
-  color: #ff6b6b;
-  background: rgba(255, 107, 107, 0.1);
-  border: 1px solid rgba(255, 107, 107, 0.3);
-}
-
-/* Бейдж "ПРОСРОЧЕНО" */
-.overdue-badge {
-  display: inline-block;
-  padding: 2px 8px;
-  margin-left: 10px;
-  font-size: 0.7rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: #fff;
-  background: var(--red-gradient);
-  border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+@media (max-width: 768px) {
+  .main-wrapper { 
+    padding: 1rem; 
+  }
+  
+  .stats-grid { 
+    grid-template-columns: repeat(2, 1fr); 
+  }
+  
+  .task-content { 
+    flex-direction: column; 
+    align-items: flex-start; 
+    gap: 1rem; 
+  }
+  
+  .task-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .search-form,
+  .filter_block form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-input,
+  .filter_el,
+  .search-btn,
+  .filter_block input[type="submit"] {
+    width: 100%;
+  }
 }

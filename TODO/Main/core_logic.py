@@ -17,13 +17,13 @@ def get_filter_task(user, progress=-1, tag="_", search=""):
 
 def get_statistical(user):
     tasks = user.tasks
-    
+
     counts = tasks.aggregate(
-        count_active=Count("progress", filter=Q(progress=0)),
-        count_work=Count("progress", filter=Q(progress=1)),
-        count_completed=Count("progress", filter=Q(progress=2)),
-        count_failed=Count("progress", filter=Q(progress=3)),
-        count_postponed=Count("progress", filter=Q(progress=4)),
+    count_0=Count("progress", filter=Q(progress=0)),  
+    count_1=Count("progress", filter=Q(progress=1)),
+    count_2=Count("progress", filter=Q(progress=2)),
+    count_3=Count("progress", filter=Q(progress=3)),
+    count_4=Count("progress", filter=Q(progress=4)),
     )
     return counts
 

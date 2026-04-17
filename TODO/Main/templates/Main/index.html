@@ -104,35 +104,34 @@
 
                 <!-- ПРАВАЯ ЧАСТЬ: Меню действий -->
                 <div class="task-actions">
-                    <div class="dropdown">
-                        <button class="dropdown-toggle">⋮</button>
+            <div class="dropdown">
+                <button class="dropdown-toggle">⋮</button>
+                
+                <!-- ВЫПАДАЮЩЕЕ МЕНЮ -->
+                <div class="dropdown-menu">
+                    <!-- СМЕНА СТАТУСА -->
+                    <form method="POST" action="{% url 'state' %}" id="status-form-{{ i.id }}">
+                        {% csrf_token %}
+                        <input type="hidden" name="id" value="{{ i.id }}">
+                        <select name="state" class="status-select" onchange="changeStatus({{ i.id }})">
+                            <option value="0" {% if i.progress == 0 %}selected{% endif %}>Принята</option>
+                            <option value="1" {% if i.progress == 1 %}selected{% endif %}>В разработке</option>
+                            <option value="2" {% if i.progress == 2 %}selected{% endif %}>Выполнена</option>
+                            <option value="3" {% if i.progress == 3 %}selected{% endif %}>Просрочена</option>
+                            <option value="4" {% if i.progress == 4 %}selected{% endif %}>Отложена</option>
+                        </select>
+                    </form>
 
-                        <div class="dropdown-menu">
-                            <!-- СМЕНА СТАТУСА -->
-                        <form method="POST" action="{% url 'state' %}" id="status-form-{{ i.id }}">
-                            {% csrf_token %}
-                            <input type="hidden" name="id" value="{{ i.id }}">
-                            <!-- Добавили onchange="changeStatus(...)" -->
-                            <select name="state" class="status-select" onchange="changeStatus({{ i.id }})">
-                                <option value="0" {% if i.progress == 0 %}selected{% endif %}>Принята</option>
-                                <option value="1" {% if i.progress == 1 %}selected{% endif %}>В разработке</option>
-                                <option value="2" {% if i.progress == 2 %}selected{% endif %}>Выполнена</option>
-                                <option value="3" {% if i.progress == 3 %}selected{% endif %}>Просрочена/Просрочена</option>
-                                <option value="4" {% if i.progress == 4 %}selected{% endif %}>Отложена</option>
-                            </select>
-                        </form>
+                    <div class="dropdown-divider"></div>
 
-                            <div class="dropdown-divider"></div>
-
-                            <!-- УДАЛЕНИЕ -->
-                            <form method="POST" action="{% url "delete" %}" onsubmit="return confirm('Удалить задачу?')">
-                                {% csrf_token %}
-                                <input type="hidden" name="id" value="{{ i.id }}">
-                                <button class="delete-btn">Удалить</button>
-                            </form>
-                        </div>
-                    </div>
+                    <!-- УДАЛЕНИЕ -->
+                    <form method="POST" action="{% url 'delete' %}" onsubmit="return confirm('Удалить задачу?')">
+                        {% csrf_token %}
+                        <input type="hidden" name="id" value="{{ i.id }}">
+                        <button type="submit" class="delete-btn">Удалить</button>
+                    </form>
                 </div>
+            </div>
             </div>
         </div>
 
@@ -158,43 +157,4 @@
 
 {% block scripts %}
 <script src="{% static "Main/js/script.js" %}"></script>
-
-<script>
-function changeStatus(taskId) {
-    const form = document.getElementById(`status-form-${taskId}`);
-    if (!form) return;
-    
-    const select = form.querySelector('select');
-    const originalValue = select.value;
-    
-
-    select.disabled = true;
-    select.style.opacity = '0.6';
-    
-    const formData = new FormData(form);
-    
-    fetch(form.action, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-CSRFToken': formData.get('csrfmiddlewaretoken')
-        }
-    })
-    .then(response => {
-        if (response.ok || response.redirected) {
-            window.location.reload(); 
-        } else {
-            select.value = originalValue; 
-            alert('Ошибка при изменении статуса');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        select.value = originalValue;
-        select.disabled = false;
-        select.style.opacity = '1';
-        alert('Произошла ошибка. Попробуйте ещё раз.');
-    });
-}
-</script>
 {% endblock scripts %}
