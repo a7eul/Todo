@@ -14,12 +14,19 @@ class Task(models.Model):
         HOME = "home", "Дом"
         MY_TASKS = "my_tasks", "Мои задачи"
 
+    class Priority(models.IntegerChoices):
+        HIGH = 1 , "Высокий"
+        MEDIUM = 2 , "Средний"
+        LOW = 3 , "Низкий"
+
+
     name = models.CharField(max_length=42, verbose_name="Имя задачи")
     description = models.TextField(max_length=700, blank=True, default="", verbose_name="Описание задачи")
     tags = models.CharField(max_length=20, choices=Tag.choices, blank=True, default=Tag.MY_TASKS, verbose_name="Тег")
     progress = models.IntegerField(choices=Progress.choices, default=Progress.ACTIVE, verbose_name="Прогресс")
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Автор задачи", related_name="tasks")
     deadline = models.DateTimeField(null=True, blank=True, verbose_name="Дедлайн")
+    priority = models.IntegerField(choices=Priority.choices, default=Priority.MEDIUM, verbose_name="Приоритет")
 
     def __str__(self):
         return self.name
@@ -27,4 +34,4 @@ class Task(models.Model):
     class Meta:
         verbose_name = "Задача"
         verbose_name_plural = "Задачи"
-        ordering = ["-id"]  
+        ordering = ["priority", "-id"]  

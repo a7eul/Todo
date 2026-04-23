@@ -29,9 +29,12 @@
         <a href="{% url "create" %}">
             <button class="btn create-btn">+ Добавить задачу</button>
         </a>
+        <a href="{% url 'calendar' %}" style="margin-left: 1rem;">
+        <button class="btn" style="background: rgba(255,255,255,0.1);">Календарь</button>
+    </a>
     </div>
 
-    <!--  УМНЫЙ ПОИСК (НОВОЕ) -->
+    <!--  УМНЫЙ ПОИСК-->
     <div class="search-block" style="margin-bottom: 15px;">
         <form method="GET" action="{% url 'main' %}" class="search-form">
             <input 
@@ -74,19 +77,23 @@
     <!-- СПИСОК ЗАДАЧ -->
     <div class="tasks-container">
         {% for i in tasks %}
-        
-        <!-- Добавляем класс is-overdue, если статус 3 (Просрочено/Провалено) -->
+    
         <div class="task-card card status-{{ i.progress }} {% if i.progress == 3 %}is-overdue{% endif %}">
     
-            <!--  Редактирование -->
             <a href="{% url "update" %}?id={{ i.id }}" class="edit-btn">Редактировать</a>
 
             <div class="task-content">
-                <!-- ЛЕВАЯ ЧАСТЬ: Инфо о задаче -->
                 <div class="task-info">
                     <h4>
+                        {% if i.priority == 1 %}
+                            <span class="priority-badge high"></span>
+                        {% elif i.priority == 2 %}
+                            <span class="priority-badge medium"></span>
+                        {% else %}
+                            <span class="priority-badge low"></span>
+                        {% endif %}
+                        
                         {{ i.name }}
-                        <!-- Если статус 3 (Просрочена), показываем бейдж -->
                         {% if i.progress == 3 %}
                             <span class="overdue-badge">Просрочено</span>
                         {% endif %}
@@ -102,14 +109,11 @@
                     {% endif %}
                 </div>
 
-                <!-- ПРАВАЯ ЧАСТЬ: Меню действий -->
                 <div class="task-actions">
             <div class="dropdown">
                 <button class="dropdown-toggle">⋮</button>
                 
-                <!-- ВЫПАДАЮЩЕЕ МЕНЮ -->
                 <div class="dropdown-menu">
-                    <!-- СМЕНА СТАТУСА -->
                     <form method="POST" action="{% url 'state' %}" id="status-form-{{ i.id }}">
                         {% csrf_token %}
                         <input type="hidden" name="id" value="{{ i.id }}">
@@ -144,7 +148,6 @@
         {% endfor %}
     </div>
 
-    <!-- LOGOUT -->
     <div class="logout-block">
         <a href="{% url "logout" %}">
             <button class="btn logout-btn">Logout</button>

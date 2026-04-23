@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Календарь задач{% endblock title %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'Main/css/calendar.css' %}">
+{% endblock style %}
+
+{% block content %}
+
+<div class="main-wrapper">
+
+    <div class="calendar-header card">
+        <a href="{% url 'calendar' %}?year={{ prev_year }}&month={{ prev_month }}" class="nav-btn">
+            ← Предыдущий
+        </a>
+        
+        <h2 class="calendar-title">
+            {{ month_name }} {{ year }}
+        </h2>
+        
+        <a href="{% url 'calendar' %}?year={{ next_year }}&month={{ next_month }}" class="nav-btn">
+            Следующий →
+        </a>
+    </div>
+    <div class="calendar-grid card">
+        <!-- Дни недели -->
+        <div class="weekday">Пн</div>
+        <div class="weekday">Вт</div>
+        <div class="weekday">Ср</div>
+        <div class="weekday">Чт</div>
+        <div class="weekday">Пт</div>
+        <div class="weekday">Сб</div>
+        <div class="weekday">Вс</div>
+
+        <!-- Дни месяца -->
+        {% for day in calendar_days %}
+            {% if day %}
+                <div class="calendar-day {% if day.is_today %}today{% endif %}">
+                    <div class="day-number">{{ day.day }}</div>
+                    
+                    {% if day.tasks %}
+                        <div class="day-tasks">
+                            {% for task in day.tasks|slice:":3" %}
+                                <div class="task-indicator status-{{ task.progress }}" 
+                                     title="{{ task.name }} ({{ task.get_progress_display }})">
+                                    <span class="task-dot"></span>
+                                    <span class="task-name">{{ task.name|truncatechars:20 }}</span>
+                                </div>
+                            {% endfor %}
+                            {% if day.tasks|length > 3 %}
+                                <div class="more-tasks">+{{ day.tasks|length|add:"-3" }} ещё</div>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="no-tasks"></div>
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="calendar-day empty"></div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- Кнопка назад -->
+    <div class="back-block">
+        <a href="{% url 'main' %}" class="btn back-btn">← Назад к задачам</a>
+    </div>
+
+</div>
+
+{% endblock content %}

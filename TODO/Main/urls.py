@@ -8,4 +8,5 @@ urlpatterns = [
     path("main/changeState/", views.change_state, name="state"),  
     path("main/filter/", views.filter_tasks, name="filter"),    
     path("main/delete/", views.delete_task, name="delete"),      
+    path("main/calendar/", views.calendar_view, name="calendar"),
 ]

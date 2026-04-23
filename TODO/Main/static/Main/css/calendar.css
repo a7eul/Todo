@@ -1,0 +1,237 @@
+/* =========================
+   CALENDAR STYLES
+========================= */
+
+/* Заголовок календаря */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.calendar-title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #fff, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nav-btn {
+  padding: 0.75rem 1.5rem;
+  background: rgba(102, 126, 234, 0.15);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 12px;
+  color: #a78bfa;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+  background: rgba(102, 126, 234, 0.25);
+  border-color: rgba(102, 126, 234, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Сетка календаря */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Дни недели */
+.weekday {
+  text-align: center;
+  padding: 1rem 0.5rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Ячейка дня */
+.calendar-day {
+  min-height: 120px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 0.75rem;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.calendar-day:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Сегодняшний день */
+.calendar-day.today {
+  background: rgba(102, 126, 234, 0.15);
+  border-color: rgba(102, 126, 234, 0.4);
+  box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+}
+
+.calendar-day.today .day-number {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+}
+
+/* Номер дня */
+.day-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Задачи в дне */
+.day-tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.task-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.task-indicator:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(2px);
+}
+
+.task-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.task-name {
+  color: rgba(255, 255, 255, 0.8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Цвета статусов для точек */
+.task-indicator.status-0 .task-dot { background: #6c757d; }
+.task-indicator.status-1 .task-dot { background: #3b82f6; }
+.task-indicator.status-2 .task-dot { background: #10b981; }
+.task-indicator.status-3 .task-dot { background: #f59e0b; }
+.task-indicator.status-4 .task-dot { background: #ef4444; }
+
+/* Больше задач */
+.more-tasks {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  padding: 2px;
+}
+
+/* Пустой день */
+.no-tasks {
+  flex: 1;
+}
+
+/* Пустые ячейки */
+.calendar-day.empty {
+  background: transparent;
+  border: none;
+}
+
+/* Кнопка назад */
+.back-block {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.back-btn {
+  display: inline-block;
+  padding: 0.875rem 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 14px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Адаптив */
+@media (max-width: 768px) {
+  .calendar-grid {
+    gap: 4px;
+    padding: 1rem;
+  }
+  
+  .calendar-day {
+    min-height: 80px;
+    padding: 0.5rem;
+  }
+  
+  .weekday {
+    font-size: 0.75rem;
+    padding: 0.75rem 0.25rem;
+  }
+  
+  .day-number {
+    width: 24px;
+    height: 24px;
+    font-size: 0.8rem;
+  }
+  
+  .task-indicator {
+    font-size: 0.65rem;
+    padding: 2px 4px;
+  }
+  
+  .task-name {
+    display: none; /* Скрываем названия на мобильных */
+  }
+  
+  .calendar-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .calendar-title {
+    font-size: 1.5rem;
+  }
+}

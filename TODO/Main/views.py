@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from . import forms, models, core_logic
+from django.utils import timezone
+from datetime import datetime, timedelta
+from calendar import monthrange
 from .models import Task
+from . import core_logic
 
 @login_required
 def main(request):
@@ -75,3 +78,73 @@ def filter_tasks(request):
 def delete_task(request):  
     core_logic.deleteTask(request)
     return redirect("main")
+    
+@login_required
+def calendar_view(request):
+    year = request.GET.get('year', timezone.now().year)
+    month = request.GET.get('month', timezone.now().month)
+    
+    try:
+        year = int(year)
+        month = int(month)
+    except (ValueError, TypeError):
+        year = timezone.now().year
+        month = timezone.now().month
+    
+    tasks = Task.objects.filter(
+        author=request.user,
+        deadline__isnull=False,
+        deadline__year=year,
+        deadline__month=month
+    ).order_by('deadline')
+    
+    first_day, num_days = monthrange(year, month)
+    
+    calendar_days = []
+    current_day = 1
+    
+    for _ in range(first_day):
+        calendar_days.append(None)
+    
+    while current_day <= num_days:
+        day_tasks = [task for task in tasks if task.deadline.day == current_day]
+        calendar_days.append({
+            'day': current_day,
+            'tasks': day_tasks,
+            'is_today': (current_day == timezone.now().day and 
+                        month == timezone.now().month and 
+                        year == timezone.now().year)
+        })
+        current_day += 1
+    
+    month_names = [
+        "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+        "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+    ]
+    
+    if month == 1:
+        prev_month = 12
+        prev_year = year - 1
+    else:
+        prev_month = month - 1
+        prev_year = year
+    
+    if month == 12:
+        next_month = 1
+        next_year = year + 1
+    else:
+        next_month = month + 1
+        next_year = year
+    
+    context = {
+        'year': year,
+        'month': month,
+        'month_name': month_names[month - 1],
+        'calendar_days': calendar_days,
+        'prev_month': prev_month,
+        'prev_year': prev_year,
+        'next_month': next_month,
+        'next_year': next_year,
+    }
+    
+    return render(request, 'Main/calendar.html', context)

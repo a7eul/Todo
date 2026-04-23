@@ -4,7 +4,7 @@ from . import models
 class TaskForm(forms.ModelForm):  
     class Meta:
         model = models.Task
-        fields = ["name", "description", "tags", "deadline"]  
+        fields = ["name", "description", "tags", "deadline", "priority"]  
 
         labels = {
             "name": "Название задачи",
@@ -23,4 +23,5 @@ class TaskForm(forms.ModelForm):
             "tags": forms.Select(attrs={"class": "form-select"}),
             "deadline": forms.DateTimeInput(attrs={"type": "datetime-local",  "class": "form-control"
             }),
+            "priority": forms.Select(attrs={"class": "form-control"}),
         }
