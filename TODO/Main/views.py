@@ -5,6 +5,8 @@ from datetime import datetime, timedelta
 from calendar import monthrange
 from .models import Task
 from . import core_logic
+from django.contrib.auth import logout
+from .forms import TaskForm
 
 @login_required
 def main(request):
@@ -29,14 +31,29 @@ def create(request):
         return redirect("main") 
     return render(request, "Main/createTask.html", {"form": result})
 
-@login_required
-def update(request):
-    result = core_logic.updateTask(request)
-    if result is True:
-        return redirect("main")
-    return render(request, "Main/updateTask.html", {"form": result})
+def updateTask(request):
+    task_id = request.POST.get("id") or request.GET.get("id")
 
-@login_required
+    if not task_id:
+        return False
+    
+    try:
+        task = Task.objects.get(id=task_id, author=request.user)
+    except Task.DoesNotExist:
+        return False
+
+    if request.method == "GET":
+        return TaskForm(instance=task)
+    
+    elif request.method == "POST":
+        form = TaskForm(data=request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            return True
+        return False
+    return None
+
+
 @login_required
 def change_state(request):
     
@@ -148,3 +165,8 @@ def calendar_view(request):
     }
     
     return render(request, 'Main/calendar.html', context)
+
+@login_required
+def user_logout(request):
+    logout(request)  
+    return redirect("enter")

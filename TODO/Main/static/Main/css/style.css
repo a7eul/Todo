@@ -511,23 +511,39 @@
 }
 
 .logout-block {
-  margin-top: 2rem;
+  position: relative;
+  z-index: 50; 
+  pointer-events: auto !important;
 }
 
 .logout-btn {
-  background: var(--red-gradient);
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 16px;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  user-select: none;
+  position: relative;
+  z-index: 51;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none; 
+}
+  
+  .logout-block {
+  position: relative;
+  z-index: 50; /* Поднимаем над другими элементами */
+  pointer-events: auto !important;
 }
 
-.logout-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(255, 77, 77, 0.4);
+.logout-btn {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  user-select: none;
+  position: relative;
+  z-index: 51;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none; 
 }
 
 /* =========================
